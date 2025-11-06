@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리미엄 차량 관리 서비스 - 모토카워시</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS 생략 (이전 버전과 동일) */
+        /* 기본 초기화 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', 'Malgun Gothic', '맑은 고딕', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background-color: #f7f7f7;
+            scroll-behavior: smooth; 
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            overflow: hidden;
+            padding: 0 15px;
+        }
+
+        /* 색상 변수 */
+        :root {
+            --primary-color: #007bff; 
+            --secondary-color: #2850a7; 
+            --dark-bg: #343a40; 
+            --light-text: #f8f9fa; 
+            --naver-green: #03c75a; 
+        }
+
+        /* 폰트 및 제목 스타일 */
+        h1, h2, h3, h4 {
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 2em;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        /* 1. Header 스타일 */
+        header {
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+        }
+
+        header .logo { 
+            color: var(--primary-color); 
+            font-size: 1.5em; 
+            font-weight: 700;
+        }
+
+        header nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center; 
+            gap: 20px;
+        }
+
+        header nav a {
+            text-decoration: none;
+            color: #333;
+            padding: 5px 0;
+            transition: color 0.3s;
+        }
+
+        header nav a:hover {
+            color: var(--primary-color);
+        }
+
+        /* 로그인 아이콘 스타일 */
+        .fa-user-icon::before {
+            content: '👤'; 
+            margin-right: 5px;
+            display: inline-block;
+        }
+
+        /* CTA 버튼 (로그인 버튼 포함) */
+        .cta-button {
+            background: var(--primary-color);
+            color: white !important;
+            padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            font-weight: 700 !important;
+            position: relative; 
+        }
+
+        .cta-button:hover {
+            background-color: #0056b3;
+        }
+        
+        /* 로그인 상태 표시자 스타일 */
+        .login-status-indicator {
+            position: absolute;
+            top: -3px; 
+            right: -3px; 
+            width: 8px;
+            height: 8px;
+            background-color: #00ff26; 
+            border-radius: 50%;
+            border: 2px solid white; 
+            display: none; 
+        }
+
+        /* 로그인 상태일 때만 표시 */
+        .cta-button.logged-in .login-status-indicator {
+            display: block; 
+            background-color: var(--naver-green); 
+        }
+        
+        /* 숨김 처리 */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* 1.5. 네이버 톡톡 버튼 스타일 및 공통 버튼 */
+        .naver-talktalk, .btn.secondary {
+            background-color: var(--naver-green) !important;
+            color: white !important;
+            border: 1px solid var(--naver-green) !important;
+        }
+
+        .naver-talktalk:hover, .btn.secondary:hover {
+            background-color: #029a46 !important;
+            box-shadow: 0 4px 8px rgba(3, 199, 90, 0.4);
+        }
+
+        /* 버튼 스타일 공통 */
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 700;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+
+        .btn.primary {
+            background: var(--primary-color);
+            color: white;
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn.primary:hover {
+            background: #0056b3;
+        }
+
+        /* 톡톡 플로팅 버튼 */
+        .naver-talktalk {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 1050;
+            padding: 10px 15px;
+            border-radius: 50px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 섹션 공통 스타일 */
+        .section {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .dark-bg {
+            background-color: var(--dark-bg);
+            color: var(--light-text);
+        }
+
+
+        /* 2. Hero Section 스타일 */
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), #343a40; 
+            color: white;
+            padding: 100px 0;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section h2 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+        }
+
+        .hero-section p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        /* 3. Services Section 스타일 */
+        .services-section {
+            background: #f7f7f7;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .service-card {
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            border-top: 5px solid var(--primary-color);
+            transition: transform 0.3s;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-card h4 {
+            color: var(--primary-color);
+            font-size: 1.4em;
+            margin-top: 0;
+        }
+
+        /* 4. Advantages Section (특장점) */
+        .advantages-section {
+            text-align: left;
+        }
+
+        .advantages-section h3 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--light-text);
+        }
+
+        .advantage-list ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .advantage-list li {
+            background: #495057;
+            padding: 20px;
+            border-radius: 8px;
+            flex: 1 1 250px;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        /* 5. Pricing Section (개러지 가격표) 스타일 */
+        .section-description {
+            max-width: 800px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+            color: #555;
+            font-weight: 400;
+        }
+
+        .garage-pricing-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .garage-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            flex: 1 1 300px;
+            max-width: 350px;
+            text-align: center;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s, border 0.3s; 
+            border: 1px solid #eee;
+        }
+
+        .garage-card:hover {
+            transform: translateY(-8px);
+            border: 3px solid var(--primary-color); 
+            box-shadow: 0 10px 25px rgba(0, 123, 255, 0.25); 
+        }
+
+        .garage-card.recommended {
+            border: 1px solid #eee;
+            transform: none;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .garage-card.recommended:hover {
+            transform: scale(1.05) translateY(-8px); 
+            border: 3px solid var(--primary-color); 
+            box-shadow: 0 10px 30px rgba(0, 123, 255, 0.5); 
+        }
+
+        .garage-card.recommended .btn {
+            background: var(--primary-color) !important;
+            border: 1px solid var(--primary-color) !important;
+            color: white !important;
+            transition: background-color 0.3s, border-color 0.3s; 
+        }
+        
+        .garage-card.recommended .btn:hover {
+            background: #0056b3 !important;
+            border: 1px solid #0056b3 !important;
+        }
+        
+        /* 등급 헤더 배경색 */
+        .garage-header {
+            padding: 18px 0;
+            font-size: 1.6em;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .garage-header.vip { background-color: #0093e9; }
+        .garage-header.vvip { background-color: var(--primary-color); }
+        .garage-header.svip { background-color: var(--secondary-color); }
+
+        /* 충전 금액 스타일 */
+        .garage-price {
+            font-size: 3.0em;
+            font-weight: 900;
+            color: var(--primary-color);
+            margin: 10px 0 30px;
+            padding: 0 20px;
+            letter-spacing: -1px;
+        }
+
+        /* 세부 목록 스타일 */
+        .garage-details {
+            list-style: none;
+            padding: 0 30px;
+            margin: 0;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .garage-details li {
+            padding: 10px 0;
+            border-bottom: 1px dashed #e0e0e0;
+            font-size: 1.05em;
+            color: #444;
+        }
+
+        .garage-details li strong { color: var(--secondary-color); }
+        .garage-details li:last-child { border-bottom: none; }
+
+        /* 가입 버튼 스타일 */
+        .garage-card .btn {
+            display: block;
+            margin: 0 30px 30px 30px;
+            padding: 15px 0;
+            font-size: 1.1em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 유의사항 텍스트 스타일 */
+        .notice {
+            text-align: center !important;
+            margin-top: 50px !important;
+            padding-top: 25px !important;
+            font-size: 0.95em;
+            color: #777 !important;
+        }
+
+
+        /* 6. Location Info */
+        .info-section { padding: 40px 0; text-align: left; }
+        .info-section h3 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        .location-info {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            margin-top: 20px;
+            text-align: center;
+        }
+        .location-info p { margin: 10px 0; font-size: 1.1em; }
+        .map-link {
+            display: block;
+            margin-top: 15px;
+            padding: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .map-link:hover { background-color: #f0f0f0; }
+
+
+        /* 7. CTA Banner */
+        .cta-banner {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 50px 0;
+            text-align: center;
+        }
+        .cta-banner h2 { margin-top: 0; font-size: 2em; }
+
+        /* 8. Footer 스타일 */
+        footer {
+            background: #333;
+            color: #ccc;
+            padding: 30px 0;
+            font-size: 0.9em;
+        }
+        footer .container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            text-align: left;
+        }
+        .footer-info p { margin: 5px 0; }
+        .footer-links a {
+            color: #ccc;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+        .footer-links a:hover { color: white; }
+        
+        /* 모바일 반응형 */
+        @media (max-width: 992px) {
+            header nav { display: none; }
+            header .container { justify-content: center; }
+            .hero-section h2 { font-size: 2.2em; }
+            .service-grid { grid-template-columns: repeat(2, 1fr); }
+            .advantage-list li { flex: 1 1 45%; }
+        }
+
+        @media (max-width: 600px) {
+            .container { width: 95%; }
+            .section { padding: 40px 0; }
+            .hero-section h2 { font-size: 1.8em; }
+            .hero-section p { font-size: 1em; }
+            .service-grid { grid-template-columns: 1fr; }
+            .advantage-list li { flex: 1 1 100%; }
+            .garage-card { flex: 1 1 100%; max-width: 100%; }
+            footer .container { flex-direction: column; text-align: center; }
+        }
+    </style>
+    
+    <script>
+        // 상단 메뉴 클릭 시 부드럽게 스크롤되도록 보강
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('header nav a[href^="#"]');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+                        e.preventDefault();
+                        const target = document.querySelector(this.hash);
+                        if (target) {
+                            window.scrollTo({
+                                top: target.offsetTop - 70, 
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        // ===============================================
+        // 로그인 상태 및 사용자 이름 동적 표시 기능
+        // ===============================================
+        let isUserLoggedIn = false; // 초기 상태: 로그인 안됨
+        
+        // **⭐ 이 부분이 DB에서 가져온 사용자 이름 시뮬레이션입니다.**
+        // 실제 서버에서는 이 변수를 로그인 성공 시 서버로부터 받은 값으로 대체해야 합니다.
+        const userName = "김철수"; 
+
+        function updateLoginDisplay() {
+            const preLogin = document.getElementById('pre-login');
+            const postLogin = document.getElementById('post-login');
+            const postLoginName = document.getElementById('post-login-name');
+
+            if (preLogin && postLogin && postLoginName) {
+                if (isUserLoggedIn) {
+                    // 로그인 후: 로그인 버튼 숨기고 사용자 이름 표시
+                    preLogin.classList.add('hidden');
+                    postLogin.classList.remove('hidden');
+                    
+                    // **⭐ 사용자 이름 동적 업데이트**
+                    postLoginName.textContent = userName + " 님";
+                } else {
+                    // 로그인 전: 로그인 버튼 표시하고 사용자 이름 숨김
+                    preLogin.classList.remove('hidden');
+                    postLogin.classList.add('hidden');
+                }
+            }
+        }
+
+        // 로그인 상태를 토글하는 함수 (개발 테스트용)
+        function toggleLoginStatus() {
+            isUserLoggedIn = !isUserLoggedIn;
+            updateLoginDisplay();
+            console.log("로그인 상태가 변경되었습니다. 현재 상태:", isUserLoggedIn ? `${userName} 님 표시` : "로그인 버튼 표시");
+        }
+
+        document.addEventListener('DOMContentLoaded', updateLoginDisplay); // 페이지 로드 시 초기 상태 적용
+    </script>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <h1 class="logo">모토카워시</h1>
+        <nav class="desktop-nav"> 
+            <ul>
+                <li><a href="#services">서비스</a></li>
+                <li><a href="#garage-pricing">가격 안내</a></li> 
+                <li><a href="#advantages">특장점</a></li>
+                <li><a href="#location-and-info">지점</a></li> 
+                
+                <li><a href="notice.html">공지사항</a></li> 
+
+                <li><a href="reservation.html" class="cta-button">온라인 예약</a></li> 
+                <li><a href="signup.html" class="cta-button">회원가입</a></li> 
+                
+                <li id="pre-login">
+                    <a href="login.html" class="cta-button">
+                        <i class="fa-user-icon"></i> 
+                        로그인
+                    </a>
+                </li> 
+
+                <li id="post-login" class="hidden">
+                    <a href="mypage.html" class="cta-button logged-in">
+                        <span class="login-status-indicator"></span> 
+                        <i class="fa-user-icon"></i> 
+                        <span id="post-login-name">홍길동 님</span> </a>
+                </li> 
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section id="hero" class="hero-section">
+    <div class="hero-content">
+        <h2>차량 관리, 이제 모토카워시 전문가에게 맡기세요</h2>
+        <p>광택, 세차, PPF까지 한 번에, 스마트하게 관리하세요.</p>
+        <a href="reservation.html" class="btn primary">지금 서비스 예약하기</a>
+    </div>
+</section>
+
+<hr>
+
+<section id="services" class="section services-section">
+    <div class="container">
+        <h3>모토카워시 핵심 서비스</h3>
+        <div class="service-grid">
+            <div class="service-card">
+                <h4>오토샤워 오토버블</h4>
+                <p>최첨단 자동 세차 시스템으로, 차량을 부드럽게 세척합니다. (24시간 이용 가능)</p>
+            </div>
+            <div class="service-card">
+                <h4>프리미엄 세차 / 디테일링</h4>
+                <p>손세차부터 광택, 코팅까지, 차량을 새것처럼 완벽하게 복원합니다.</p>
+            </div>
+            <div class="service-card">
+                <h4>프라이빗 개러지</h4>
+                <p>나만의 공간에서 자유롭게 차량을 관리할 수 있는 멤버십 시설을 제공합니다.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<hr>
+
+<section id="garage-pricing" class="section">
+    <div class="container">
+        <h3>모토카워시 개러지 회원 등급 안내</h3>
+        <p class="section-description">
+            프라이빗 개러지 이용을 위한 시간 충전식 회원권입니다. 더 많은 시간을 충전할수록 시간당 이용료가 저렴해집니다.
+        </p>
+
+        <h4 style="margin-top: 20px; font-size: 1.8rem; color: #333;">개러지 회원 등급 (시간 충전)</h4>
+
+        <div class="garage-pricing-container">
+            <div class="garage-card">
+                <div class="garage-header vip">VIP 등급</div>
+                <div class="garage-price">160,000원</div>
+                <ul class="garage-details">
+                    <li>**충전 시간:** 10시간</li>
+                    <li>**카드 이용 시:** 시간당 **16,000원**</li>
+                    <li>**현금/계좌 이용 시 (보너스 1시간):** 총 11시간, 시간당 약 **14,545원**</li>
+                    <li>**유효기간:** 6개월</li>
+                </ul>
+                <a href="payment_select.html?plan=vip" class="btn primary">VIP 가입</a>
+            </div>
+
+            <div class="garage-card recommended">
+                <div class="garage-header vvip">VVIP 등급</div>
+                <div class="garage-price">300,000원</div>
+                <ul class="garage-details">
+                    <li>**충전 시간:** 20시간</li>
+                    <li>**카드 이용 시:** 시간당 **15,000원**</li>
+                    <li>**현금/계좌 이용 시 (보너스 2시간):** 총 22시간, 시간당 약 **13,636원**</li>
+                    <li>**유효기간:** 1년</li>
+                </ul>
+                <a href="payment_select.html?plan=vvip" class="btn secondary">VVIP 가입</a>
+            </div>
+
+            <div class="garage-card">
+                <div class="garage-header svip">SVIP 등급</div>
+                <div class="garage-price">500,000원</div>
+                <ul class="garage-details">
+                    <li>**충전 시간:** 40시간</li>
+                    <li>**카드 이용 시:** 시간당 **12,500원**</li>
+                    <li>**현금/계좌 이용 시 (보너스 3시간):** 총 43시간, 시간당 약 **11,628원**</li>
+                    <li>**유효기간:** 1년</li>
+                </ul>
+                <a href="payment_select.html?plan=svip" class="btn primary">SVIP 가입</a>
+            </div>
+        </div>
+
+        <p class="notice">
+            **📌 유의사항:** 개러지를 1회라도 이용한 경우, 잔여시간 환불은 불가합니다.<br>
+            현금/계좌 결제 시 보너스 시간이 추가 적립되며, 기간 이후 잔여 시간은 소멸됩니다.
+        </p>
+    </div>
+</section>
+
+<hr>
+
+<section id="advantages" class="section advantages-section dark-bg">
+    <div class="container">
+        <h3>모토카워시의 특별함</h3>
+        <div class="advantage-list">
+            <ul>
+                <li>**전문 테크니션:** 10년 이상 경력의 전문가가 전담하여 최고의 서비스를 제공</li>
+                <li>**편리한 예약:** 24시간 온라인 예약 및 실시간 상담 시스템을 통한 편리한 이용</li>
+                <li>**투명한 가격:** 불필요한 비용 없는 명확한 견적 시스템으로 신뢰 확보</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<hr>
+
+<section id="location-and-info" class="section info-section">
+    <div class="container">
+        
+        <h3 style="margin-top: 0;">모토카워시 지점 안내</h3>
+        <div class="location-info">
+            <h4>📍 모토카워시 부천 본점</h4>
+            <p><strong>주소:</strong> 경기도 부천시 오정구 내동 66-1</p>
+            <p><strong>연락처:</strong> 032-677-5519</p>
+            <p><strong>운영시간:</strong> 24시간 연중무휴</p>
+            <a href="https://map.naver.com/p/search/%EB%AA%A8%ED%86%A0%EC%B9%B4%EC%9B%8C%EC%8B%9C/place/1082142077?placePath=?entry=pll&from=nx&fromNxList=true&searchType=place&c=15.00,0,0,0,dh" target="_blank" class="map-link">
+                네이버 지도에서 길찾기
+            </a>
+        </div>
+        
+    </div>
+</section>
+
+<hr>
+
+<section class="cta-banner">
+    <div class="container">
+        <h2>나만을 위한 맞춤 관리 솔루션을 모토카워시에서 만나보세요</h2>
+        <a href="reservation.html" class="btn secondary">예약하기 / 상담받기</a>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-info">
+            <p>© 2025 모토카워시. All rights reserved.</p>
+            <p>경기도 부천시 신흥로398 모토카워시 | 대표: 황인직</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">이용약관</a> | <a href="#">개인정보처리방침</a>
+        </div>
+    </div>
+</footer>
+
+<a href="https://talk.naver.com/ct/wcscj0" target="_blank" class="btn cta-button naver-talktalk" 
+    style="position: fixed; right: 20px; bottom: 20px; z-index: 1050; padding: 10px 15px; border-radius: 50px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+    톡톡 문의하기
+</a>
+
+</body>
+</html>
